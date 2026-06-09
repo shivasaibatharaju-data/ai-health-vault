@@ -1,0 +1,9 @@
+flowchart LR
+    USER["User"] --> FRONTEND["React + Vite"]
+    FRONTEND --> API["FastAPI"]
+    API --> EXTRACT["PyMuPDF extraction"]
+    EXTRACT --> SUMMARY["AI summary"]
+    EXTRACT --> RETRIEVAL["Chunk retrieval"]
+    RETRIEVAL --> QA["Grounded Q&A"]
+    API --> DATABASE["SQLite / PostgreSQL"]
+    API --> STORAGE["Local files / AWS S3"]
