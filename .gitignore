@@ -32,6 +32,7 @@ build/
 .next/
 out/
 .vite/
+.vercel/
 *.tsbuildinfo
 coverage/
 npm-debug.log*
