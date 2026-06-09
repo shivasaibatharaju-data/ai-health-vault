@@ -6,7 +6,7 @@ The application allows users to upload text-based medical record PDFs, extract c
 
 **What I built:**
 
-- React and Vite frontend for uploads, summaries, and record Q&A
+- Next.js 15, TypeScript, and Tailwind CSS frontend with a responsive public website and SaaS dashboard
 - FastAPI backend with validated PDF processing
 - PyMuPDF-based document text extraction
 - OpenAI-assisted summarization with a rule-based fallback

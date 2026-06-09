@@ -2,11 +2,11 @@
 
 ## Overview
 
-AI Health Vault is split into a React client and a FastAPI service. The MVP keeps the application easy to run locally while exposing configuration points for managed PostgreSQL and AWS S3.
+AI Health Vault is split into a Next.js 15 client and a FastAPI service. The MVP keeps the application easy to run locally while exposing configuration points for managed PostgreSQL and AWS S3.
 
 ```mermaid
 flowchart TD
-    USER["User browser"] --> UI["React frontend"]
+    USER["User browser"] --> UI["Next.js 15 frontend"]
     UI -->|REST/JSON| API["FastAPI backend"]
     API --> VALIDATE["PDF validation"]
     VALIDATE --> EXTRACT["PyMuPDF text extraction"]
@@ -18,9 +18,9 @@ flowchart TD
     API --> FILES["Local files / AWS S3"]
 ```
 
-## React Frontend
+## Next.js Frontend
 
-The Vite-powered React client provides record upload, question entry, error handling, and summary display. `VITE_API_URL` selects the FastAPI origin at build time.
+The Next.js 15 App Router client provides a public marketing site and an authenticated-style SaaS workspace. TypeScript components cover record upload, search, summary display, record-grounded chat, timeline views, settings, responsive navigation, and light/dark themes. `NEXT_PUBLIC_API_URL` selects the FastAPI origin at build time.
 
 ## FastAPI Backend
 

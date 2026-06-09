@@ -25,11 +25,14 @@ uploads/
 medical-records/
 *.pdf
 
-# Node.js, React, and Vite
+# Node.js, React, Next.js, and Vite
 node_modules/
 dist/
 build/
+.next/
+out/
 .vite/
+*.tsbuildinfo
 coverage/
 npm-debug.log*
 yarn-debug.log*

@@ -1,74 +1,154 @@
 # Deployment Guide
 
-This guide describes a portfolio deployment using Vercel, Render, Neon PostgreSQL, and AWS S3. Do not upload real patient data to a demonstration environment.
+This guide deploys AI Health Vault with Vercel, Render, Neon PostgreSQL, and AWS S3. The public portfolio environment must use synthetic data.
 
-## 1. Neon PostgreSQL
+## Deployment Architecture
 
-1. Create a Neon project and database.
-2. Copy the pooled PostgreSQL connection string.
-3. Keep SSL enabled in the connection string.
-4. Save the value as `DATABASE_URL` in Render.
-5. For the future vector implementation, enable the `vector` extension:
+```text
+Browser
+  -> Vercel: Next.js frontend
+  -> Render: FastAPI backend
+       -> Neon: PostgreSQL records
+       -> AWS S3: private PDF objects
+       -> OpenAI API: optional summaries and answers
+```
+
+## 1. Create a Neon PostgreSQL Database
+
+1. Create a project at Neon.
+2. Create or select a database.
+3. Copy the pooled PostgreSQL connection string.
+4. Keep SSL enabled in the connection string.
+5. Save the full string for the Render `DATABASE_URL`.
+6. For the planned vector implementation, run:
 
 ```sql
 CREATE EXTENSION IF NOT EXISTS vector;
 ```
 
-The current MVP creates its `records` table through SQLAlchemy on startup. Use Alembic migrations before evolving the production schema.
+The current backend creates its `records` table through SQLAlchemy at startup. Add Alembic migrations before evolving a production schema.
 
-## 2. AWS S3
+## 2. Configure Private AWS S3 Storage
 
-1. Create a private bucket in the deployment region.
-2. Enable "Block all public access."
-3. Enable default encryption, versioning, and an appropriate lifecycle policy.
-4. Create an IAM role or user limited to `s3:PutObject`, `s3:GetObject`, and `s3:DeleteObject` for the bucket's `medical-records/*` prefix.
-5. Add `AWS_REGION` and `S3_BUCKET_NAME` to Render.
-6. Prefer a workload IAM role. If that is unavailable, add `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` as Render secrets.
+1. Create an S3 bucket in the same region as the backend where possible.
+2. Enable **Block all public access**.
+3. Enable default server-side encryption.
+4. Enable versioning and an appropriate lifecycle policy.
+5. Create an IAM role or user limited to the bucket's `medical-records/*` prefix.
+6. Permit only the required actions, such as `s3:PutObject`, `s3:GetObject`, and `s3:DeleteObject`.
+7. Prefer an IAM workload role. Use access keys only when the host cannot assume a role.
 
-The backend automatically uploads PDFs to S3 when `S3_BUCKET_NAME` is set. Otherwise it uses local disk, which is ephemeral on Render and suitable only for short-lived demos.
-
-## 3. Backend on Render
+## 3. Deploy FastAPI on Render
 
 1. Push the repository to GitHub.
-2. In Render, create a new **Web Service** from the repository.
-3. Set **Root Directory** to `backend`.
-4. Set **Runtime** to Python.
-5. Use this build command:
+2. Open Render and create a **Web Service**.
+3. Connect `shivasaibatharaju-data/ai-health-vault`.
+4. Set **Root Directory** to `backend`.
+5. Select the Python runtime.
+6. Use this build command:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-6. Use this start command:
+7. Use this start command:
 
 ```bash
 uvicorn app.main:app --host 0.0.0.0 --port $PORT
 ```
 
-7. Add `DATABASE_URL`, `OPENAI_API_KEY`, AWS variables, and `S3_BUCKET_NAME` as secrets.
-8. Set `CORS_ORIGINS` to the final Vercel URL.
-9. Deploy and verify `https://<render-service>/health`.
+8. Add these environment variables:
 
-## 4. Frontend on Vercel
+```text
+DATABASE_URL=<neon-pooled-postgresql-url>
+OPENAI_API_KEY=<optional-openai-key>
+AWS_REGION=<bucket-region>
+S3_BUCKET_NAME=<private-bucket-name>
+AWS_ACCESS_KEY_ID=<only-if-required>
+AWS_SECRET_ACCESS_KEY=<only-if-required>
+CORS_ORIGINS=https://<vercel-domain>
+```
 
-1. Import the same GitHub repository into Vercel.
-2. Set **Root Directory** to `frontend`.
-3. Select the Vite framework preset.
-4. Keep the build command as `npm run build`.
-5. Keep the output directory as `dist`.
-6. Add `VITE_API_URL=https://<render-service>` as an environment variable.
-7. Deploy the frontend.
-8. Update the Render `CORS_ORIGINS` value with the final Vercel domain and redeploy the API.
+9. Deploy the service.
+10. Verify `https://<render-service>.onrender.com/health` returns:
 
-## 5. Verification
+```json
+{"status":"ok"}
+```
 
-1. Confirm the backend health endpoint returns `{"status":"ok"}`.
-2. Open the Vercel application and check that the record list loads.
-3. Upload a synthetic text-based PDF.
-4. Confirm its metadata is stored in Neon and the object is stored privately in S3.
-5. Ask a question whose answer appears in the synthetic record.
-6. Review Render, Neon, AWS, and Vercel logs for errors without logging document contents or secrets.
+Keep the Render service URL for the Vercel configuration.
+
+## 4. Deploy Next.js 15 on Vercel
+
+1. Open Vercel and choose **Add New > Project**.
+2. Import `shivasaibatharaju-data/ai-health-vault`.
+3. Set **Root Directory** to `frontend`.
+4. Vercel should automatically detect **Next.js**.
+5. Confirm these settings:
+
+```text
+Framework Preset: Next.js
+Install Command: npm install
+Build Command: npm run build
+Output Directory: leave blank
+Node.js Version: 22.x
+```
+
+6. Add the environment variable for Production, Preview, and Development:
+
+```text
+NEXT_PUBLIC_API_URL=https://<render-service>.onrender.com
+```
+
+7. Select **Deploy**.
+8. Open the generated Vercel domain and verify the landing page and `/dashboard`.
+9. Copy the final production domain.
+10. Return to Render and set:
+
+```text
+CORS_ORIGINS=https://<production-domain>,https://<optional-preview-domain>
+```
+
+11. Redeploy the Render service after changing CORS.
+12. Trigger one final Vercel deployment if the API URL changed.
+
+The repository includes `frontend/vercel.json`, but selecting `frontend` as the Vercel root directory is still required for the monorepo.
+
+## 5. Verification Checklist
+
+1. Visit the landing, features, pricing, login, and signup pages.
+2. Test mobile navigation and light/dark mode.
+3. Confirm `/dashboard` loads without browser console errors.
+4. Upload a small synthetic text-based PDF.
+5. Confirm the record appears in `/records`.
+6. Ask a question in `/chat` whose answer exists in the record.
+7. Confirm the uploaded object is private in S3.
+8. Confirm record metadata is present in Neon.
+9. Review Render logs without logging document contents or secrets.
+10. Verify Vercel contains only `NEXT_PUBLIC_API_URL`, not backend secrets.
+
+## 6. Preview Deployments
+
+Every pull request can create a Vercel preview deployment. Because preview URLs change, either:
+
+- add the specific preview domain to `CORS_ORIGINS`, or
+- use a controlled origin-matching strategy in FastAPI for trusted Vercel preview domains.
+
+Do not use an unrestricted `*` origin with credentialed requests.
+
+## 7. Current Backend Gaps
+
+The UI includes labeled demonstration behavior for capabilities without backend contracts:
+
+- user registration, login, password reset, and session management
+- per-user authorization and tenant isolation
+- normalized timeline event extraction and retrieval
+- profile and notification preference persistence
+- contact form delivery
+- billing, subscriptions, and entitlements
+- record detail, source citation, deletion, and export endpoints
+- account deletion and storage cleanup
 
 ## Production Hardening
 
-Before processing sensitive data, add authentication, per-user authorization, database migrations, field-level encryption, audit logging, deletion workflows, malware scanning, OCR isolation, rate limits, backups, monitoring, and formal security and compliance review.
+Before processing sensitive health information, add authenticated authorization, row-level data isolation, database migrations, field-level encryption, audit logging, malware scanning, rate limiting, document retention and deletion, backups, monitoring, incident response, vendor agreements, threat modeling, and formal legal and compliance review.

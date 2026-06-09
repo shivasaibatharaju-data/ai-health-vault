@@ -14,7 +14,10 @@ class Settings(BaseSettings):
     openai_api_key: str | None = None
     database_url: str = "sqlite:///./healthvault.db"
     upload_dir: Path = Path("./uploads")
-    cors_origins: str = "http://localhost:5173,http://127.0.0.1:5173"
+    cors_origins: str = (
+        "http://localhost:3000,http://127.0.0.1:3000,"
+        "http://localhost:5173,http://127.0.0.1:5173"
+    )
     max_upload_size_mb: int = 10
 
     aws_access_key_id: str | None = None

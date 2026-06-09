@@ -1,60 +1,71 @@
-# AI Health Vault MVP
+# AI Health Vault
 
 > AI Health Vault is an AI-powered healthcare document intelligence platform that allows users to upload medical records, extract clinical information, summarize documents, and query their health history using natural language.
 
-AI Health Vault demonstrates an end-to-end document intelligence workflow with a React interface, FastAPI services, PDF text extraction, AI-assisted summarization, retrieval-grounded question answering, relational persistence, and optional AWS S3 file storage.
+AI Health Vault is a full-stack healthcare SaaS portfolio project built with Next.js 15, TypeScript, Tailwind CSS, FastAPI, SQLAlchemy, PyMuPDF, and OpenAI APIs. It combines a polished public website with a responsive application workspace for document upload, AI summaries, record-grounded chat, medical record search, and a longitudinal health timeline.
 
 > [!IMPORTANT]
-> This repository is a portfolio MVP, not medical advice software or a HIPAA-certified service. Use synthetic documents only unless the application has completed appropriate privacy, security, legal, and clinical review.
-
-## Problem Statement
-
-Medical information is often fragmented across portals and difficult-to-read PDFs. Patients may have access to their records without having a practical way to organize them, identify important clinical details, or search across their history.
-
-## Solution Overview
-
-The application accepts text-based medical record PDFs, extracts their contents with PyMuPDF, generates a structured summary, and stores the result for later review. Questions are matched to relevant document chunks before an optional OpenAI model produces an answer grounded only in retrieved record context.
-
-The current MVP uses lightweight lexical retrieval and SQLite by default. It is designed to evolve toward OpenAI embeddings, PostgreSQL with pgvector, and production object storage.
+> This repository is a portfolio demonstration, not medical advice software or a HIPAA-certified service. Use synthetic documents only unless the application has completed appropriate privacy, security, legal, and clinical review.
 
 ## Application Preview
 
-![AI Health Vault dashboard](screenshots/app-dashboard.png)
+![AI Health Vault SaaS dashboard](screenshots/app-dashboard.png)
 
-## Key Features
+## Problem Statement
 
-- PDF upload with type validation, size limits, and randomized storage names
-- Clinical text extraction from text-based PDFs
-- AI summaries with a deterministic rule-based fallback when no API key is configured
-- Retrieval-grounded natural-language questions across uploaded records
-- React dashboard for uploads, questions, and record summaries
-- SQLite for zero-configuration local development
-- PostgreSQL/Neon-compatible database configuration
-- Optional encrypted-at-rest AWS S3 uploads
-- Configurable CORS and frontend API endpoints for deployment
+Medical information is often fragmented across portals and difficult-to-read PDFs. Patients may technically have access to their records without having a practical way to organize them, identify important details, compare events over time, or search across their health history.
+
+## Solution Overview
+
+AI Health Vault converts text-based medical record PDFs into organized, searchable knowledge. The FastAPI service extracts text, generates a structured summary, stores the record, and retrieves relevant context for natural-language questions. The Next.js application presents that workflow through a production-style healthcare SaaS experience.
+
+The current backend uses lightweight lexical retrieval and SQLite by default. It supports PostgreSQL and optional AWS S3 storage and is designed to evolve toward OpenAI embeddings and pgvector semantic search.
+
+## Product Experience
+
+### Public Website
+
+- Responsive healthcare SaaS landing page
+- Product features and pricing pages
+- Login and signup experiences
+- Contact, privacy policy, and terms pages
+- Light and dark themes
+- Professional navigation, footer, metadata, and mobile layouts
+
+### Application Workspace
+
+- Dashboard with record counts, summaries, recent questions, and timeline previews
+- Drag-and-drop PDF upload with validation, progress, success, and error states
+- Searchable and filterable medical records library
+- Record-grounded AI chat with suggested questions and source labels
+- Longitudinal health timeline
+- Profile, security, notification, and data settings
+- Empty states for new users and labeled synthetic fallbacks when APIs are unavailable
 
 ## Tech Stack
 
 | Layer | Technology |
 | --- | --- |
-| Frontend | React, Vite, Axios |
+| Web application | Next.js 15 App Router, React 19, TypeScript |
+| Styling | Tailwind CSS, responsive design, `next-themes` |
+| UI | Reusable React components, Lucide icons |
 | Backend | FastAPI, Python, Pydantic |
 | PDF extraction | PyMuPDF |
-| AI | OpenAI API with rule-based fallback |
+| AI | OpenAI API with deterministic fallback |
 | Retrieval | Lexical chunk retrieval in MVP; pgvector planned |
 | Database | SQLite locally; PostgreSQL/Neon supported |
-| File storage | Local filesystem or AWS S3 |
+| File storage | Local filesystem or private AWS S3 |
 | Deployment | Vercel, Render, Neon, AWS |
 
 ## Architecture Flow
 
 ```mermaid
 flowchart LR
-    U["User"] --> F["React + Vite"]
-    F --> API["FastAPI API"]
+    U["User"] --> WEB["Next.js 15 application"]
+    WEB --> API["FastAPI API"]
     API --> PDF["PDF validation and extraction"]
-    PDF --> SUM["Structured summarization"]
-    PDF --> RET["Chunk retrieval"]
+    PDF --> SUM["AI or rule-based summary"]
+    PDF --> RET["Relevant chunk retrieval"]
     RET --> QA["Grounded Q&A"]
     API --> DB["SQLite or PostgreSQL"]
     API --> S3["Local storage or AWS S3"]
@@ -62,16 +73,42 @@ flowchart LR
 
 See [docs/architecture.md](docs/architecture.md) for the current and target architecture.
 
+## Pages
+
+| Route | Purpose |
+| --- | --- |
+| `/` | Public landing page |
+| `/features` | Detailed product capabilities |
+| `/pricing` | SaaS pricing preview |
+| `/login` | Login experience |
+| `/signup` | Account creation experience |
+| `/dashboard` | Health workspace overview |
+| `/upload` | Medical record upload |
+| `/records` | Searchable document library |
+| `/chat` | AI health record assistant |
+| `/timeline` | Longitudinal health timeline |
+| `/settings` | Profile and settings |
+| `/contact` | Product and collaboration contact |
+| `/privacy` | Privacy policy |
+| `/terms` | Terms of service |
+
 ## Repository Structure
 
 ```text
 .
-|-- architecture/          # Diagram source and architecture assets
+|-- architecture/          # Mermaid architecture source
 |-- backend/               # FastAPI application and tests
-|-- docs/                  # Architecture, deployment, LinkedIn, and resume content
-|-- frontend/              # React + Vite application
-|-- screenshots/           # Portfolio screenshots
-|-- .env.example           # Secret-free environment variable template
+|-- docs/                  # Architecture, deployment, and portfolio content
+|-- frontend/
+|   |-- app/               # Next.js App Router pages and layouts
+|   |-- components/        # Shared marketing and application components
+|   |-- lib/               # Typed API client, mock data, utilities
+|   |-- .env.example
+|   |-- next.config.ts
+|   |-- tailwind.config.ts
+|   `-- vercel.json
+|-- screenshots/           # Synthetic-data portfolio screenshots
+|-- .env.example           # Backend environment template
 |-- .gitignore
 |-- LICENSE
 `-- README.md
@@ -86,15 +123,24 @@ See [docs/architecture.md](docs/architecture.md) for the current and target arch
 - npm
 - Optional: OpenAI API key, PostgreSQL database, and AWS S3 bucket
 
-Clone the repository and create a local environment file:
+Clone the repository and create environment files:
 
 ```powershell
 Copy-Item .env.example backend/.env
+Copy-Item frontend/.env.example frontend/.env.local
 ```
 
-The blank `DATABASE_URL` in the template automatically falls back to local SQLite.
+The blank backend `DATABASE_URL` falls back to local SQLite.
 
 ## Environment Variables
+
+### Frontend
+
+| Variable | Required | Purpose |
+| --- | --- | --- |
+| `NEXT_PUBLIC_API_URL` | No | FastAPI base URL; defaults to `http://localhost:8000` |
+
+### Backend
 
 | Variable | Required | Purpose |
 | --- | --- | --- |
@@ -103,9 +149,8 @@ The blank `DATABASE_URL` in the template automatically falls back to local SQLit
 | `AWS_ACCESS_KEY_ID` | No | AWS credential for S3; prefer an IAM role in production |
 | `AWS_SECRET_ACCESS_KEY` | No | AWS credential for S3; never commit a real value |
 | `AWS_REGION` | For S3 | AWS region containing the bucket |
-| `S3_BUCKET_NAME` | No | Enables S3 persistence when configured |
-| `CORS_ORIGINS` | No | Comma-separated frontend origins |
-| `VITE_API_URL` | No | Frontend API base URL; defaults to `http://localhost:8000` |
+| `S3_BUCKET_NAME` | No | Enables private S3 persistence |
+| `CORS_ORIGINS` | No | Comma-separated allowed frontend origins |
 
 ## Run the Backend
 
@@ -119,7 +164,7 @@ uvicorn app.main:app --reload --port 8000
 
 API documentation is available at `http://localhost:8000/docs`.
 
-On macOS or Linux, activate the environment with:
+On macOS or Linux:
 
 ```bash
 source .venv/bin/activate
@@ -135,36 +180,59 @@ npm install
 npm run dev
 ```
 
-Open `http://localhost:5173`. For a deployed API, set `VITE_API_URL` in the frontend hosting environment.
+Open `http://localhost:3000`.
 
-## Tests and Build
+## Validation
 
 ```powershell
 cd backend
 pytest
 
 cd ../frontend
+npm run typecheck
 npm run build
+npm audit
 ```
+
+## Backend Integration Status
+
+| Frontend workflow | Endpoint | Status |
+| --- | --- | --- |
+| List records | `GET /records` | Connected |
+| Upload PDF | `POST /records/upload` | Connected |
+| Ask records | `POST /ask` | Connected |
+| Authentication | Not implemented | Demo UI with TODO |
+| Timeline events | Not implemented | Synthetic fallback with TODO |
+| Profile/settings | Not implemented | Demo persistence with TODO |
+| Contact form | Not implemented | Demo success state with TODO |
+| Billing/subscriptions | Not implemented | Pricing preview only |
+| Record detail/delete | Not implemented | Summary modal only |
 
 ## Deployment
 
-The recommended portfolio deployment uses Vercel for the frontend, Render for the API, Neon PostgreSQL for relational data, and AWS S3 for uploaded PDFs. Follow [docs/deployment.md](docs/deployment.md).
+The recommended portfolio deployment uses:
+
+- **Vercel** for the Next.js frontend
+- **Render** for FastAPI
+- **Neon PostgreSQL** for relational data
+- **AWS S3** for private PDF storage
+
+Follow the exact instructions in [docs/deployment.md](docs/deployment.md).
 
 ## Future Improvements
 
-1. Replace lexical retrieval with OpenAI embeddings and pgvector similarity search.
-2. Add OCR for scanned and handwritten documents.
-3. Add authenticated user workspaces and row-level data isolation.
-4. Encrypt sensitive database fields and add audit logging.
-5. Add document deletion, retention policies, and S3 lifecycle rules.
-6. Introduce background jobs for large-document processing.
-7. Add evaluation datasets for summary quality and retrieval accuracy.
-8. Complete HIPAA, threat-modeling, and clinical safety reviews before real-world use.
+1. Add production authentication and per-user tenant isolation.
+2. Replace lexical retrieval with OpenAI embeddings and pgvector.
+3. Add OCR for scanned and handwritten documents.
+4. Add normalized timeline-event APIs and source-page citations.
+5. Add field-level encryption, audit logs, and document deletion workflows.
+6. Add background jobs and malware scanning for uploads.
+7. Add Stripe billing, entitlements, and usage metering.
+8. Complete HIPAA, threat-modeling, legal, and clinical safety reviews.
 
 ## Resume-Ready Description
 
-Built an AI-powered healthcare document intelligence platform using React, FastAPI, PyMuPDF, SQLAlchemy, and OpenAI APIs to extract and summarize medical record PDFs and answer natural-language questions through a retrieval-grounded workflow, with PostgreSQL and AWS S3 deployment support.
+Built a full-stack healthcare document intelligence SaaS using Next.js 15, TypeScript, Tailwind CSS, FastAPI, PyMuPDF, SQLAlchemy, and OpenAI APIs, enabling PDF ingestion, structured clinical summaries, record-grounded Q&A, searchable document libraries, and longitudinal health timelines with PostgreSQL and AWS S3 deployment support.
 
 Additional role-specific bullets are available in [docs/resume-bullets.md](docs/resume-bullets.md).
 
