@@ -40,6 +40,14 @@ The current backend creates its `records` table through SQLAlchemy at startup. A
 
 ## 3. Deploy FastAPI on Render
 
+The repository includes a root-level `render.yaml` Blueprint for a one-click
+portfolio deployment:
+
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/shivasaibatharaju-data/ai-health-vault)
+
+The Blueprint uses Render's free web-service plan with SQLite and ephemeral
+local uploads. Configure Neon and S3 after the initial launch for durable data.
+
 1. Push the repository to GitHub.
 2. Open Render and create a **Web Service**.
 3. Connect `shivasaibatharaju-data/ai-health-vault`.

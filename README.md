@@ -219,6 +219,8 @@ The recommended portfolio deployment uses:
 
 Follow the exact instructions in [docs/deployment.md](docs/deployment.md).
 
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/shivasaibatharaju-data/ai-health-vault)
+
 ## Future Improvements
 
 1. Add production authentication and per-user tenant isolation.
