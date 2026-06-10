@@ -55,3 +55,13 @@ jobs:
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+      - name: Verify production services
+        run: |
+          curl --fail --silent --show-error \
+            --retry 5 --retry-all-errors --retry-delay 5 \
+            https://ai-health-vault.vercel.app/ > /dev/null
+          curl --fail --silent --show-error \
+            --retry 5 --retry-all-errors --retry-delay 5 \
+            https://ai-health-vault-api.onrender.com/health \
+            | grep --quiet '"status":"ok"'

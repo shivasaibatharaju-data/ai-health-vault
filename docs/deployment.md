@@ -136,6 +136,10 @@ VERCEL_ORG_ID=<Vercel user or team ID>
 VERCEL_PROJECT_ID=<Vercel project ID>
 ```
 
+Vercel access tokens are scoped to an account or team, not directly to one
+project. Use a dedicated Vercel team containing only this project when strict
+project isolation is required, and set an expiration date for the token.
+
 In GitHub, open **Settings > Secrets and variables > Actions**, add the three
 repository secrets, and then run **Deploy Frontend to Vercel**. The workflow:
 
@@ -143,6 +147,7 @@ repository secrets, and then run **Deploy Frontend to Vercel**. The workflow:
 2. Builds the Next.js application in GitHub Actions.
 3. Uploads the prebuilt output to Vercel.
 4. Promotes the deployment to the production domain.
+5. Verifies the public frontend and backend health endpoint.
 
 Use this workflow when the Vercel and GitHub browser accounts do not share the
 same repository ownership. If the accounts are aligned later, the native Vercel
