@@ -1,5 +1,24 @@
 # AI Health Vault
 
+## Why I Built This
+
+While working with healthcare data, I realized that many patients still struggle to access, organize, and understand their medical records. Healthcare information is often scattered across multiple providers, portals, and document formats, making it difficult to review medical history or locate important information when needed.
+
+To address this challenge, I built AI Health Vault, a healthcare document intelligence platform that helps users centralize medical records, generate structured summaries, explore health information through natural language, and visualize healthcare events through a timeline-based interface.
+
+I designed the application architecture, developed the frontend and backend services, implemented document processing workflows, deployed the platform to the cloud, and documented the system design and deployment process. This project allowed me to combine my interests in healthcare, data engineering, AI, and modern cloud technologies while building a real-world solution to a practical problem.
+
+## What AI Health Vault Does
+
+AI Health Vault enables users to:
+
+* Upload and organize medical records
+* Generate structured AI-powered summaries
+* Search healthcare documents
+* Ask questions about uploaded records
+* View healthcare events through a timeline interface
+* Manage records from a centralized dashboard
+
 > AI Health Vault is an AI-powered healthcare document intelligence platform that allows users to upload medical records, extract clinical information, summarize documents, and query their health history using natural language.
 
 AI Health Vault is a full-stack healthcare SaaS portfolio project built with Next.js 15, TypeScript, Tailwind CSS, FastAPI, SQLAlchemy, PyMuPDF, and OpenAI APIs. It combines a polished public website with a responsive application workspace for document upload, AI summaries, record-grounded chat, medical record search, and a longitudinal health timeline.
