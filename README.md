@@ -232,11 +232,11 @@ Follow the exact instructions in [docs/deployment.md](docs/deployment.md).
 7. Add Stripe billing, entitlements, and usage metering.
 8. Complete HIPAA, threat-modeling, legal, and clinical safety reviews.
 
-## Resume-Ready Description
+I noticed that patients often struggle to access, organize, and understand their medical records because healthcare information is spread across multiple providers and document formats.
 
-Built a full-stack healthcare document intelligence SaaS using Next.js 15, TypeScript, Tailwind CSS, FastAPI, PyMuPDF, SQLAlchemy, and OpenAI APIs, enabling PDF ingestion, structured clinical summaries, record-grounded Q&A, searchable document libraries, and longitudinal health timelines with PostgreSQL and AWS S3 deployment support.
+To address this challenge, I built AI Health Vault, a healthcare document management platform that allows users to upload medical records, organize documents in a centralized workspace, generate structured summaries, and visualize health history through a timeline-based interface.
 
-Additional role-specific bullets are available in [docs/resume-bullets.md](docs/resume-bullets.md).
+I designed the frontend, developed the backend APIs, implemented document processing workflows, deployed the application to the cloud, and documented the system architecture and deployment process. The project helped me gain hands-on experience in full-stack development, cloud deployment, healthcare data workflows, and AI-powered document intelligence.
 
 ## License
 
