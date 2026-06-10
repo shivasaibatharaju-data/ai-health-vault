@@ -1,5 +1,7 @@
 # AI Health Vault
 
+[![Deploy Frontend to Vercel](https://github.com/shivasaibatharaju-data/ai-health-vault/actions/workflows/vercel-deploy.yml/badge.svg)](https://github.com/shivasaibatharaju-data/ai-health-vault/actions/workflows/vercel-deploy.yml)
+
 ## Why I Built This
 
 While working with healthcare data, I realized that many patients still struggle to access, organize, and understand their medical records. Healthcare information is often scattered across multiple providers, portals, and document formats, making it difficult to review medical history or locate important information when needed.
@@ -29,6 +31,12 @@ AI Health Vault is a full-stack healthcare SaaS portfolio project built with Nex
 ## Application Preview
 
 ![AI Health Vault SaaS dashboard](screenshots/app-dashboard.png)
+
+## Live Application
+
+- Frontend: [ai-health-vault.vercel.app](https://ai-health-vault.vercel.app)
+- Backend health check: [ai-health-vault-api.onrender.com/health](https://ai-health-vault-api.onrender.com/health)
+- Interactive API documentation: [ai-health-vault-api.onrender.com/docs](https://ai-health-vault-api.onrender.com/docs)
 
 ## Problem Statement
 
@@ -239,6 +247,9 @@ The recommended portfolio deployment uses:
 Follow the exact instructions in [docs/deployment.md](docs/deployment.md).
 
 [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/shivasaibatharaju-data/ai-health-vault)
+
+The repository also includes a GitHub Actions workflow that automatically
+deploys frontend changes from `main` to the production Vercel project.
 
 ## Future Improvements
 

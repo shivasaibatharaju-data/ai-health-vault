@@ -122,6 +122,32 @@ CORS_ORIGINS=https://<production-domain>,https://<optional-preview-domain>
 
 The repository includes `frontend/vercel.json`, but selecting `frontend` as the Vercel root directory is still required for the monorepo.
 
+### Automatic Vercel Deployment from GitHub Actions
+
+The repository includes `.github/workflows/vercel-deploy.yml`. It deploys the
+`frontend` directory to the production Vercel project whenever frontend code is
+pushed to `main`. It can also be started manually from the GitHub Actions page.
+
+Configure these encrypted repository secrets:
+
+```text
+VERCEL_TOKEN=<Vercel access token>
+VERCEL_ORG_ID=<Vercel user or team ID>
+VERCEL_PROJECT_ID=<Vercel project ID>
+```
+
+In GitHub, open **Settings > Secrets and variables > Actions**, add the three
+repository secrets, and then run **Deploy Frontend to Vercel**. The workflow:
+
+1. Pulls the production Vercel project settings.
+2. Builds the Next.js application in GitHub Actions.
+3. Uploads the prebuilt output to Vercel.
+4. Promotes the deployment to the production domain.
+
+Use this workflow when the Vercel and GitHub browser accounts do not share the
+same repository ownership. If the accounts are aligned later, the native Vercel
+GitHub integration can replace the workflow.
+
 ## 5. Verification Checklist
 
 1. Visit the landing, features, pricing, login, and signup pages.
